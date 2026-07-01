@@ -12,7 +12,8 @@ class MUX28(instrument):
     def electrode(self,n):
         if n not in range(1,29):
             raise ValueError('Electrode n must be between 1 and 28')
-        self.send_comm(n+100)
+        # Pass 1-28 to Arduino
+        self.send_comm(n)
         
     def ida(self,n):
         if n not in range(1,15):
@@ -22,14 +23,17 @@ class MUX28(instrument):
     def gen(self,n):
         if n not in range(1,15):
             raise ValueError('Generator n must be between 1 and 14')
-        command = (115-n)
-        self.send_comm(command)
+        # Maps Gen 1-14 to WE1 channels 1-14
+        self.send_comm(n)
+
+        # NOTE: Noticed that previous MUX8 required generators to be reversed, uncomment line below if it needs it.
+        # self.send_comm(15-n)
 
     def coll(self,n):
         if n not in range(1,15):
             raise ValueError('Collector n must be between 1 and 14')
-        command = (114+n)
-        self.send_comm(command)
+        # Maps Coll 1-14 to WE2 channels 15-28 (14+1=15... 14+14=28)
+        self.send_comm(n+14)
         
     def send_comm(self,n):
         self.ser.write(bytes(f'<{n}>', 'utf-8'))
@@ -38,10 +42,19 @@ class MUX28(instrument):
             print(msg.decode('utf-8'))
 
     def gen_all(self):
-        self.send_comm(230)
+        self.send_comm(100) # All WE1
     
     def coll_all(self):
-        self.send_comm(220)
+        self.send_comm(200) # All WE2
 
     def all(self):
-        self.send_comm(240)
+        self.send_comm(300) # Everything
+
+    def global_short(self):
+        self.send_comm(400) # Everything with bridge relay closed
+
+    def bridge_only(self):
+        self.send_comm(90) # Only bridge relay closed
+
+    def clear_all(self):
+        self.send_comm(0) # Opens every relay on board
