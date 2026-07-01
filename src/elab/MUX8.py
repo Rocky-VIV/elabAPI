@@ -24,9 +24,11 @@ class MUX28(instrument):
         if n not in range(1,15):
             raise ValueError('Generator n must be between 1 and 14')
         # Maps Gen 1-14 to WE1 channels 1-14
+        # Standard Mapping (Gen 1 = Electrode 1)
         self.send_comm(n)
 
         # NOTE: Noticed that previous MUX8 required generators to be reversed, uncomment line below if it needs it.
+        # Reversed Mapping (Gen 1 = Electrode 14), if using reversed make sure to comment out/delete the self.send_comm(n) line!
         # self.send_comm(15-n)
 
     def coll(self,n):
