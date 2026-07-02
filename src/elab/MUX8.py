@@ -59,5 +59,10 @@ class MUX28(instrument):
     def bridge_only(self):
         self.send_comm(90) # Only bridge relay closed
 
+    def bridge_on(self):
+        self.send_comm(91) # Closes bridge relay while preserving current electrode states
+
+    def clear_all(self):
+
     def clear_all(self):
         self.send_comm(0) # Opens every relay on board
