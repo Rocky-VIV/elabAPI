@@ -18,7 +18,8 @@ class MUX28(instrument):
     def ida(self,n):
         if n not in range(1,15):
             raise ValueError('IDA n must be between 1 and 14')
-        self.send_comm(n)
+        # Shifted to 500+ block to avoid clashing with the individual channels
+        self.send_comm(500+n)
 
     def gen(self,n):
         if n not in range(1,15):
